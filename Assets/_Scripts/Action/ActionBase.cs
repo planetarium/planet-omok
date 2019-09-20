@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Collections.Immutable;
 using Libplanet;
 using Libplanet.Action;
 using UniRx;
+using System.Collections.Generic;
 
 namespace Nekoyume.Action
 {
@@ -10,93 +12,41 @@ namespace Nekoyume.Action
     public abstract class ActionBase : IAction
     {
         public const string MarkChanged = "";
-        
+        public ActionType type;
+
         public abstract IImmutableDictionary<string, object> PlainValue { get; }
         public abstract void LoadPlainValue(IImmutableDictionary<string, object> plainValue);
         public abstract IAccountStateDelta Execute(IActionContext ctx);
 
-        public struct ActionEvaluation<T>
-            where T : ActionBase
-        {
-            public T Action { get; set; }
-            public IActionContext InputContext { get; set; }
-            public IAccountStateDelta OutputStates { get; set; }
-        }
+        private static readonly Dictionary<ActionType, EventHandler<IActionContext>> EventHandlers =
+            new Dictionary<ActionType, EventHandler<IActionContext>>();
 
-        private static readonly Subject<ActionEvaluation<ActionBase>> RenderSubject =
-            new Subject<ActionEvaluation<ActionBase>>();
-        private static readonly Subject<ActionEvaluation<ActionBase>> UnrenderSubject =
-            new Subject<ActionEvaluation<ActionBase>>();
+        public enum ActionType
+        {
+            JoinSession = 0,
+        }
 
         public void Render(IActionContext context, IAccountStateDelta nextStates)
         {
-            RenderSubject.OnNext(new ActionEvaluation<ActionBase>()
-            {
-                Action = this,
-                InputContext = context,
-                OutputStates = nextStates,
-            });
+            EventHandlers[type]?.Invoke(this, context);
         }
 
         public void Unrender(IActionContext context, IAccountStateDelta nextStates)
         {
-            UnrenderSubject.OnNext(new ActionEvaluation<ActionBase>()
-            {
-                Action = this,
-                InputContext = context,
-                OutputStates = nextStates,
-            });
-            
+
         }
 
-        public static IObservable<ActionEvaluation<T>> EveryRender<T>()
-            where T : ActionBase
+        public static void AddRenderHandler(ActionType actionAddress, EventHandler<IActionContext> handler)
         {
-            return RenderSubject.AsObservable().Where(
-                eval => eval.Action is T
-            ).Select(eval => new ActionEvaluation<T>
-            {
-                Action = (T) eval.Action,
-                InputContext = eval.InputContext,
-                OutputStates = eval.OutputStates,
-            });
+            if (!EventHandlers.ContainsKey(actionAddress))
+                EventHandlers[actionAddress] = null;
+
+            EventHandlers[actionAddress] += handler;
         }
 
-        public static IObservable<ActionEvaluation<T>> EveryUnrender<T>()
-            where T : ActionBase
+        public static void RemoveRenderHandler(ActionType actionAddress, EventHandler<IActionContext> handler)
         {
-            return UnrenderSubject.AsObservable().Where(
-                eval => eval.Action is T
-            ).Select(eval => new ActionEvaluation<T>
-            {
-                Action = (T) eval.Action,
-                InputContext = eval.InputContext,
-                OutputStates = eval.OutputStates,
-            });
-        }
-
-        public static IObservable<ActionEvaluation<ActionBase>> EveryRender(Address updatedAddress)
-        {
-            return RenderSubject.AsObservable().Where(
-                eval => eval.OutputStates.UpdatedAddresses.Contains(updatedAddress)
-            ).Select(eval => new ActionEvaluation<ActionBase>
-            {
-                Action = eval.Action,
-                InputContext = eval.InputContext,
-                OutputStates = eval.OutputStates,
-            });
-        }
-
-        public static IObservable<ActionEvaluation<ActionBase>> EveryUnrender(Address updatedAddress)
-        {
-            return UnrenderSubject.AsObservable().Where(
-                eval => eval.OutputStates.UpdatedAddresses.Contains(updatedAddress)
-            ).Select(eval => new ActionEvaluation<ActionBase>
-            {
-                Action = eval.Action,
-                InputContext = eval.InputContext,
-                OutputStates = eval.OutputStates,
-            });
+            EventHandlers[actionAddress] -= handler;
         }
     }
 }

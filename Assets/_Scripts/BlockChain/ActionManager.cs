@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Libplanet;
+using Libplanet.Action;
 using Nekoyume.Action;
 using UniRx;
 
@@ -16,24 +17,19 @@ namespace Nekoyume.BlockChain
         {
             AgentController.Agent.EnqueueAction(action);
         }
-        
+
         #region Actions
-        
-        public IObservable<ActionBase.ActionEvaluation<HackAndSlash>> HackAndSlash(
-            int stage)
+
+        public void JoinSession(
+            string a_sessionID, EventHandler<IActionContext> handler)
         {
-            var action = new HackAndSlash
+            var action = new JoinSession
             {
-                stage = stage,
-                avatarAddress = States.Instance.currentAvatarState.Value.address,
+                sessionID = a_sessionID
             };
             ProcessAction(action);
 
-            return ActionBase.EveryRender<HackAndSlash>()
-                .SkipWhile(eval => !eval.Action.Id.Equals(action.Id))
-                .Take(1)
-                .Last()
-                .ObserveOnMainThread();
+            ActionBase.AddRenderHandler(ActionBase.ActionType.JoinSession, handler);
         }
         #endregion
     }
