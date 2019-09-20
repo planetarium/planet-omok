@@ -6,7 +6,10 @@ using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
+    public const int size = 10;
+
     public Grid<Image> grid;
+    public static Grid<List<PlayerNode>> nodes;
     public GameObject cellPrefab;
     public Transform cellParent;
     public Color cellColor1;
@@ -17,14 +20,19 @@ public class GameBoard : MonoBehaviour
     void Awake()
     {
         grid = new Grid<Image>(10);
+        nodes = new Grid<List<PlayerNode>>(10);
         foreach (var cell in grid)
         {
             var go = Instantiate(cellPrefab, cellParent);
             var image = go.GetComponent<Image>();
             cell.SetData(image);
         }
+        foreach (var cell in nodes)
+        {
+            cell.SetData(new List<PlayerNode>(4));
+        }
 
-        for(int x = 0; x < grid.Columns.Count; ++x)
+        for (int x = 0; x < grid.Columns.Count; ++x)
         {
             for(int y = 0; y < grid.Rows.Count; ++y)
             {
