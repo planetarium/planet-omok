@@ -1,25 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Libplanet;
 using Libplanet.Action;
+using Nekoyume.State;
 
 namespace Nekoyume.Action
 {
-    class JoinSession : GameAction
+    [ActionType("join_session")]
+    public class JoinSession : GameAction
     {
-        protected override IImmutableDictionary<string, object> PlainValueInternal => throw new NotImplementedException();
+        public string sessionID;
 
-        public override IAccountStateDelta Execute(IActionContext ctx)
-        {
-            throw new NotImplementedException();
-        }
+        protected override IImmutableDictionary<string, object> PlainValueInternal =>
+            new Dictionary<string, object>
+            {
+                ["sessionID"] = ByteSerializer.Serialize(sessionID),
+            }.ToImmutableDictionary();
+
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, object> plainValue)
         {
-            throw new NotImplementedException();
+            sessionID = ByteSerializer.Deserialize<string>((byte[])plainValue["sessionID"]);
+        }
+
+        public override IAccountStateDelta Execute(IActionContext ctx)
+        {
+            var states = ctx.PreviousStates;
+
+            if (ctx.Rehearsal)
+            {
+                states = states.SetState(SessionState.Address, MarkChanged);
+                return states.SetState(ctx.Signer, MarkChanged);
+            }
+
+            var sessionState = (SessionState)states.GetState(SessionState.Address) ?? new SessionState();
+            if (sessionState.sessions.ContainsKey(sessionID))
+            {
+                sessionState.sessions[sessionID].Add(ctx.Signer);
+            }
+            else
+            {
+                sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
+            }
+            GameManager.instance.currentSession = sessionID;
+            return states.SetState(SessionState.Address, sessionState);
         }
     }
 }

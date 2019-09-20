@@ -16,24 +16,16 @@ namespace Nekoyume.BlockChain
         {
             AgentController.Agent.EnqueueAction(action);
         }
-        
+
         #region Actions
-        
-        public IObservable<ActionBase.ActionEvaluation<HackAndSlash>> HackAndSlash(
-            int stage)
+
+        public void JoinSesion(string a_sessionID)
         {
-            var action = new HackAndSlash
+            var action = new JoinSession
             {
-                stage = stage,
-                avatarAddress = States.Instance.currentAvatarState.Value.address,
+                sessionID = a_sessionID,
             };
             ProcessAction(action);
-
-            return ActionBase.EveryRender<HackAndSlash>()
-                .SkipWhile(eval => !eval.Action.Id.Equals(action.Id))
-                .Take(1)
-                .Last()
-                .ObserveOnMainThread();
         }
         #endregion
     }

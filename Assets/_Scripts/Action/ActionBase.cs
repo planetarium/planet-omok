@@ -10,7 +10,7 @@ namespace Nekoyume.Action
     public abstract class ActionBase : IAction
     {
         public const string MarkChanged = "";
-        
+
         public abstract IImmutableDictionary<string, object> PlainValue { get; }
         public abstract void LoadPlainValue(IImmutableDictionary<string, object> plainValue);
         public abstract IAccountStateDelta Execute(IActionContext ctx);
@@ -46,7 +46,7 @@ namespace Nekoyume.Action
                 InputContext = context,
                 OutputStates = nextStates,
             });
-            
+
         }
 
         public static IObservable<ActionEvaluation<T>> EveryRender<T>()
@@ -56,7 +56,7 @@ namespace Nekoyume.Action
                 eval => eval.Action is T
             ).Select(eval => new ActionEvaluation<T>
             {
-                Action = (T) eval.Action,
+                Action = (T)eval.Action,
                 InputContext = eval.InputContext,
                 OutputStates = eval.OutputStates,
             });
@@ -69,7 +69,7 @@ namespace Nekoyume.Action
                 eval => eval.Action is T
             ).Select(eval => new ActionEvaluation<T>
             {
-                Action = (T) eval.Action,
+                Action = (T)eval.Action,
                 InputContext = eval.InputContext,
                 OutputStates = eval.OutputStates,
             });

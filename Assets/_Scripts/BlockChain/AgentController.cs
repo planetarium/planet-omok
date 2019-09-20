@@ -116,14 +116,14 @@ namespace Nekoyume.BlockChain
             Agent.PreloadEnded += (_, __) =>
             {
                 // 에이전트의 준비단계가 끝나면 에이전트의 상태를 한 번 동기화 한다.
-                States.Instance.agentState.Value = (AgentState) Agent.GetState(Agent.Address) ??
-                                                   new AgentState(Agent.Address);
+                //States.Instance.agentState = (AgentState) Agent.GetState(Agent.Address) ??
+                //                                   new AgentState(Agent.Address);
                 // 에이전트에 포함된 모든 아바타의 상태를 한 번씩 동기화 한다.
-                foreach (var pair in States.Instance.agentState.Value.avatarAddresses)
+                /*foreach (var pair in States.Instance.agentState.Value.avatarAddresses)
                 {
                     var avatarState = (AvatarState) Agent.GetState(pair.Value);
                     States.Instance.avatarStates.Add(pair.Key, avatarState);
-                }
+                }*/
 
                 // 그리고 모든 액션에 대한 랜더를 핸들링하기 시작한다.
                 ActionRenderHandler.Instance.Start();
@@ -258,8 +258,6 @@ namespace Nekoyume.BlockChain
             {
                 return;
             }
-
-            Debug.LogError("Destroyed");
 
             ActionRenderHandler.Instance.Stop();
             Agent?.Dispose();

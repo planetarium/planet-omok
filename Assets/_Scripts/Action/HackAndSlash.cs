@@ -38,14 +38,7 @@ namespace Nekoyume.Action
             var agentState = (AgentState) states.GetState(ctx.Signer);
             if (!agentState.avatarAddresses.ContainsValue(avatarAddress))
                 return states;
-
-            var avatarState = (AvatarState) states.GetState(avatarAddress);
-            if (avatarState == null)
-            {
-                return states;
-            }
             
-            states = states.SetState(avatarAddress, avatarState);
             return states.SetState(ctx.Signer, agentState);
         }
     }
