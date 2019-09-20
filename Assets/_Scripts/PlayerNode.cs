@@ -5,6 +5,7 @@ using SimpleGrid;
 
 public class PlayerNode : MonoBehaviour
 {
+    public Sprite[] sprite;
     public (int x, int y) location;
 
     // Start is called before the first frame update
@@ -22,6 +23,7 @@ public class PlayerNode : MonoBehaviour
     {
         int max = GameBoard.size - 1;
         SetLocation(max * (playerIndex % 2), max * (playerIndex / 2));
+        GetComponent<SpriteRenderer>().sprite = sprite[playerIndex];
     }
 
     public void SetLocation(int x, int y)
