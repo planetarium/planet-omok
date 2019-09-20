@@ -30,6 +30,7 @@ public class GameBoard : MonoBehaviour
             {
                 var img = grid[x, y].Data;
                 img.rectTransform.anchoredPosition = pivot + new Vector2(x + 1, y + 1) * 64f;
+                // 격 자 모 양
                 img.color = ((x % 2 == 1) ^ (y % 2 == 1)) ? cellColor1 : cellColor2;
             }
         }
