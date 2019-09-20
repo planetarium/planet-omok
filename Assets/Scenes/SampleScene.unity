@@ -261,8 +261,8 @@ MonoBehaviour:
   cellPrefab: {fileID: 2291552510820483178, guid: 3a697231e29ca624faa86f21c7de8ee1,
     type: 3}
   cellParent: {fileID: 1217590292}
-  cellColor1: {r: 0.295, g: 0.31, b: 0.196, a: 1}
-  cellColor2: {r: 0.11311854, g: 0.7735849, b: 0.16392368, a: 1}
+  cellColor1: {r: 0.19530971, g: 0.7264151, b: 0.24965315, a: 1}
+  cellColor2: {r: 0.21782662, g: 0.5188679, b: 0.2405467, a: 1}
   pivot: {x: -320, y: -32}
 --- !u!20 &519420031
 Camera:
