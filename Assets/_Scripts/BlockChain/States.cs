@@ -36,7 +36,7 @@ namespace Nekoyume.BlockChain
 
         private void SubscribeSession(SessionState state)
         {
-            Debug.LogWarning(state.sessions.Count);
+
         }
     }
 }

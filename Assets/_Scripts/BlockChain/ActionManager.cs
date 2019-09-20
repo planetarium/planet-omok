@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Libplanet;
-using Libplanet.Action;
 using Nekoyume.Action;
 using UniRx;
 
@@ -20,14 +19,20 @@ namespace Nekoyume.BlockChain
 
         #region Actions
 
-        public void JoinSession(
-            string a_sessionID, EventHandler<IActionContext> handler)
+        public IObservable<ActionBase.ActionEvaluation<JoinSession>> JoinSesion(
+            string a_sessionID)
         {
             var action = new JoinSession
             {
-                sessionID = a_sessionID
+                sessionID = a_sessionID,
             };
             ProcessAction(action);
+
+            return ActionBase.EveryRender<JoinSession>()
+                .SkipWhile(eval => !eval.Action.Id.Equals(action.Id))
+                .Take(1)
+                .Last()
+                .ObserveOnMainThread();
         }
         #endregion
     }

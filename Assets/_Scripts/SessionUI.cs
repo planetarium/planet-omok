@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Nekoyume.BlockChain;
-using Nekoyume.Action;
+﻿using Nekoyume.BlockChain;
 using UnityEngine;
 using UnityEngine.UI;
 using Libplanet.Action;
+using UniRx;
+using Nekoyume.State;
+using Nekoyume.Action;
 
 public class SessionUI : MonoBehaviour
 {
@@ -28,7 +28,11 @@ public class SessionUI : MonoBehaviour
     private void ClickHandler()
     {
         Notify(SessionTextField.text);
-        ActionManager.instance.JoinSession(SessionTextField.text, JoinHandler);
+        ActionManager.instance.JoinSesion(SessionTextField.text)
+            .Subscribe(eval =>
+            {
+                Debug.LogWarning(((SessionState)eval.OutputStates.GetState(SessionState.Address)).sessions.Count);
+            });
     }
 
     private void Notify(string content)
