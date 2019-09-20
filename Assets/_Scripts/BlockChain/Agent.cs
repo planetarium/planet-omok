@@ -36,7 +36,7 @@ namespace Nekoyume.BlockChain
     {
         private class DebugPolicy : IBlockPolicy<PolymorphicAction<ActionBase>>
         {
-            public IAction BlockAction { get; } = new HackAndSlash();
+            public IAction BlockAction { get; }
 
             public InvalidBlockException ValidateNextBlock(IReadOnlyList<Block<PolymorphicAction<ActionBase>>> blocks, Block<PolymorphicAction<ActionBase>> nextBlock)
             {
