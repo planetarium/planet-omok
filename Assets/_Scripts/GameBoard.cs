@@ -6,23 +6,32 @@ using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
-    public Grid<GameObject> grid;
+    public Grid<Image> grid;
     public GameObject cellPrefab;
     public Transform cellParent;
-    public Color cellColor1 = new Color(0.295f, 0.31f, 0.196f);
-    public Color cellColor2 = new Color((float)0x5C/0xFF, (float)0xD7 /0xFF, (float)0x3D /0xFF);
+    public Color cellColor1;
+    public Color cellColor2;
+    public Vector2 pivot = new Vector2(-320f, 32f);
 
     // Start is called before the first frame update
     void Awake()
     {
-        grid = new Grid<GameObject>(10);
-        int cnt = 0;
+        grid = new Grid<Image>(10);
         foreach (var cell in grid)
         {
             var go = Instantiate(cellPrefab, cellParent);
             var image = go.GetComponent<Image>();
-            image.color = ((cnt & 1) == 1) ? cellColor1 : cellColor2;
-            ++cnt;
+            cell.SetData(image);
+        }
+
+        for(int x = 0; x < grid.Columns.Count; ++x)
+        {
+            for(int y = 0; y < grid.Rows.Count; ++y)
+            {
+                var img = grid[x, y].Data;
+                img.rectTransform.anchoredPosition = pivot + new Vector2(x, y) * 64f;
+                img.color = ((x % 2 == 1) ^ (y % 2 == 1)) ? cellColor1 : cellColor2;
+            }
         }
     }
 
