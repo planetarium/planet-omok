@@ -1,30 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SelectionSkill : MonoBehaviour
+public static class SelectionSkill
 {
-    PlayerNode node;
-
-    public enum Direction
+    public static void MoveStraight(this PlayerNode node, int length, Direction dir)
     {
-        Up,
-        Down,
-        Left,
-        Right
+        switch (dir)
+        {
+            case Direction.윗:
+                MoveNode(node, 0, length);
+                break;
+            case Direction.아랫:
+                MoveNode(node, 0, -length);
+                break;
+            case Direction.왼쪽:
+                MoveNode(node, -length, 0);
+                break;
+            case Direction.오른쪽:
+                MoveNode(node, length, 0);
+                break;
+            default:
+                break;
+        }
     }
 
-    public void Awake()
-    {
-        node = GetComponent<PlayerNode>();
-    }
-
-    public void MoveNode(int xOffset, int yOffset)
+    public static void MoveNode(this PlayerNode node, int xOffset, int yOffset)
     {
         node.SetLocation(node.location.x + xOffset, node.location.y + yOffset);
     }
 
-    public void DamageToLine(int start, int end, int axis, int dmg, bool isVertical = true, bool damageSelf = false)
+    public static void DamageToLine(this PlayerNode node, int start, int end, int axis, int dmg, bool isVertical = true, bool damageSelf = false)
     {
         if (end >= GameBoard.nodes.Columns.Count) end = GameBoard.nodes.Columns.Count - 1;
         if (start < 0) start = 0;
@@ -32,21 +36,21 @@ public class SelectionSkill : MonoBehaviour
         for (int i = start; i <= end; ++i)
         {
             if (isVertical)
-                foreach (var node in GameBoard.nodes.Rows[axis].columns[i].Data)
+                foreach (var n in GameBoard.nodes.Rows[axis].columns[i].Data)
                 {
-                    if (node != this || damageSelf)
-                        node.hp -= dmg;
+                    if (n != node || damageSelf)
+                        n.hp -= dmg;
                 }
             else
-                foreach (var node in GameBoard.nodes.Columns[axis].rows[i].Data)
+                foreach (var n in GameBoard.nodes.Columns[axis].rows[i].Data)
                 {
-                    if (node != this)
-                        node.hp -= dmg;
+                    if (n != node)
+                        n.hp -= dmg;
                 }
         }
     }
 
-    public void DamageRect((int x, int y) start, (int x, int y) end, int dmg, bool damageSelf = false)
+    public static void DamageRect(this PlayerNode node, (int x, int y) start, (int x, int y) end, int dmg, bool damageSelf = false)
     {
         var list = GameBoard.nodes.GetRectangle(start.x, start.y, end.x, end.y);
 
@@ -54,7 +58,7 @@ public class SelectionSkill : MonoBehaviour
         {
             foreach (var n in nodes.Data)
             {
-                if (n != this || damageSelf)
+                if (n != node || damageSelf)
                     n.hp -= dmg;
             }
         }

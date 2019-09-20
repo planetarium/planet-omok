@@ -6,6 +6,8 @@ public class PlayerNode : MonoBehaviour
     public int hp = 100;
     public int playerIndex = 0;
     public Sprite[] sprite;
+    public Transform buttonParent;
+    public Button[] buttons;
     public (int x, int y) location;
     public Image image;
 
@@ -13,7 +15,13 @@ public class PlayerNode : MonoBehaviour
     void Start()
     {
         image = GetComponent<Image>();
+        buttonParent = GameObject.Find("Buttons").transform;
+        buttons = buttonParent.GetComponentsInChildren<Button>();
         GameStart();
+        foreach (var b in buttons)
+        {
+            b.onClick.AddListener(DisplaySelection);
+        }
     }
 
     // Update is called once per frame
@@ -28,6 +36,7 @@ public class PlayerNode : MonoBehaviour
         SetLocation(max * (playerIndex % 2), max * (playerIndex / 2));
         image.sprite = sprite[playerIndex];
         image.rectTransform.sizeDelta = new Vector2(60, 70);
+        DisplaySelection();
     }
 
     public void SetLocation(int x, int y)
@@ -41,5 +50,14 @@ public class PlayerNode : MonoBehaviour
         GameBoard.nodes[location.x, location.y].Data.Remove(this);
         GameBoard.nodes[x, y].Data.Add(this);
         location = (x, y);
+    }
+
+    public void DisplaySelection()
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            var sel = SelectionManager.GetSelection();
+            buttons[i].GetComponentInChildren<Text>().text = sel.ToString();
+        }
     }
 }
