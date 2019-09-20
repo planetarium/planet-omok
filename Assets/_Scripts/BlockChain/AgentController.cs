@@ -12,6 +12,7 @@ using Nekoyume.State;
 using Nekoyume.Helper;
 using NetMQ;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Nekoyume.BlockChain
 {
@@ -22,9 +23,9 @@ namespace Nekoyume.BlockChain
     {
         public const string PlayerPrefsKeyOfAgentPrivateKey = "private_key_agent";
 #if UNITY_EDITOR
-        private const string AgentStoreDirName = "planetarium_dev";
+        private const string AgentStoreDirName = "ssglime_dev";
 #else
-        private const string AgentStoreDirName = "planetarium";
+        private const string AgentStoreDirName = "ssglime";
 #endif
 
 #if NEKOALPHA_NOMINER
@@ -45,13 +46,18 @@ namespace Nekoyume.BlockChain
         private static IEnumerator _swarmRunner;
         private static IEnumerator _logger;
 
-        public static void Initialize(Action<bool> callback)
+        private Text statusText;
+        private EventHandler loadEndedHandler;
+
+        public static void Initialize(Action<bool> callback, Text textField, EventHandler handler)
         {
             if (!ReferenceEquals(Agent, null))
             {
                 return;
             }
 
+            instance.statusText = textField;
+            instance.loadEndedHandler += handler;
             instance.InitAgent(callback);
         }
 
@@ -75,9 +81,7 @@ namespace Nekoyume.BlockChain
             );
 
             // 별도 쓰레드에서는 GameObject.GetComponent<T> 를 사용할 수 없기때문에 미리 선언.
-            string text1 = "";
-            text1 = "";
-            Agent.BootstrapStarted += (_, state) => { text1 = "네트워크 연결을 수립하고 있습니다..."; };
+            Agent.BootstrapStarted += (_, __) => { statusText.text = "네트워크 연결을 수립하고 있습니다..."; };
             Agent.PreloadProcessed += (_, state) =>
             {
                 string text;
@@ -107,7 +111,7 @@ namespace Nekoyume.BlockChain
                         throw new Exception("Unknown state was reported during preload.");
                 }
 
-                text1 = $"{text}  ({state.CurrentPhase} / {PreloadState.TotalPhase})";
+                statusText.text = $"{text}  ({state.CurrentPhase} / {PreloadState.TotalPhase})";
             };
             Agent.PreloadEnded += (_, __) =>
             {
@@ -129,6 +133,7 @@ namespace Nekoyume.BlockChain
 
                 callback(Agent.SyncSucceed);
                 Agent.LoadQueuedActions();
+                loadEndedHandler.Invoke(this, null);
             };
             _miner = options.NoMiner ? null : Agent.CoMiner();
 
@@ -249,6 +254,13 @@ namespace Nekoyume.BlockChain
 
         protected override void OnDestroy()
         {
+            if(!instance.Equals(this))
+            {
+                return;
+            }
+
+            Debug.LogError("Destroyed");
+
             ActionRenderHandler.Instance.Stop();
             Agent?.Dispose();
             
@@ -275,18 +287,6 @@ namespace Nekoyume.BlockChain
         private Coroutine StartNullableCoroutine(IEnumerator routine)
         {
             return ReferenceEquals(routine, null) ? null : StartCoroutine(routine);
-        }
-
-        public static bool WantsToQuit()
-        {
-            Agent.SaveQueuedActions();
-            return true;
-        }
-
-        [RuntimeInitializeOnLoadMethod]
-        private static void RunOnStart()
-        {
-            Application.wantsToQuit += WantsToQuit;
         }
     }
 }
