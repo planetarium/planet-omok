@@ -41,7 +41,6 @@ namespace Nekoyume.Action
             }
             else
             {
-                UnityEngine.Debug.LogWarning("new session");
                 sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
             }
             GameManager.instance.currentSession = sessionID;

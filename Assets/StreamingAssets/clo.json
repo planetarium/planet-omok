@@ -1,5 +1,5 @@
     {
-        "noMiner": true,
+        "noMiner": false,
         "privateKey": "cb90b00f7fbbc2dda0704305b752751e2ad3e1038c82d3097b380f1a824fe0a9",
         "peers": ["04245def5232f2d28bacffeed0c9ca8573347f4939f79a1bf915324b9cd7cf78d617126776702934c50eaa3139756c980c006089e40c7296bb3de779e9ec2f8556,127.0.0.1,58598"]
     }

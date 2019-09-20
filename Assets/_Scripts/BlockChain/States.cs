@@ -37,7 +37,6 @@ namespace Nekoyume.BlockChain
         {
             if (state is null)
                 return;
-            Debug.LogWarning(state.sessions[GameManager.instance.currentSession].Count);
         }
     }
 }

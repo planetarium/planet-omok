@@ -11,6 +11,7 @@ public class GameManager : MonoSingleton<GameManager>
 {
     public Text textField;
     public string currentSession;
+    public SessionUI sessionUI;
 
     protected override void Awake()
     {

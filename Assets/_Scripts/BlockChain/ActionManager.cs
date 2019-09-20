@@ -19,20 +19,13 @@ namespace Nekoyume.BlockChain
 
         #region Actions
 
-        public IObservable<ActionBase.ActionEvaluation<JoinSession>> JoinSesion(
-            string a_sessionID)
+        public void JoinSesion(string a_sessionID)
         {
             var action = new JoinSession
             {
                 sessionID = a_sessionID,
             };
             ProcessAction(action);
-
-            return ActionBase.EveryRender<JoinSession>()
-                .SkipWhile(eval => !eval.Action.Id.Equals(action.Id))
-                .Take(1)
-                .Last()
-                .ObserveOnMainThread();
         }
         #endregion
     }

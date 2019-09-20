@@ -259,8 +259,6 @@ namespace Nekoyume.BlockChain
                 return;
             }
 
-            Debug.LogError("Destroyed");
-
             ActionRenderHandler.Instance.Stop();
             Agent?.Dispose();
             

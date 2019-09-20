@@ -5,12 +5,14 @@ using Libplanet.Action;
 using UniRx;
 using Nekoyume.State;
 using Nekoyume.Action;
+using UnityEngine.SceneManagement;
 
 public class SessionUI : MonoBehaviour
 {
     public Text SessionTextField;
     public Button EnterButton;
     public GameObject NotificationPanel;
+    //private string target;
 
     // Start is called before the first frame update
     void Start()
@@ -25,25 +27,55 @@ public class SessionUI : MonoBehaviour
         
     }
 
+    private void OnDestroy()
+    {
+        GameManager.instance.sessionUI = null;
+    }
+
     private void ClickHandler()
     {
-        Notify(SessionTextField.text);
-        ActionManager.instance.JoinSesion(SessionTextField.text)
-            .Subscribe(eval =>
-            {
-
-            });
+        Notify("세션 참여 중입니다");
+        var sessionID = SessionTextField.text;
+        //target = sessionID;
+        SubscribeJoinSession(sessionID);
+        GameManager.instance.sessionUI = this;
+        ActionManager.instance.JoinSesion(sessionID);
     }
 
     private void Notify(string content)
     {
-        if(!NotificationPanel.activeSelf)
-            NotificationPanel.SetActive(true);
+        NotificationPanel.SetActive(true);
         NotificationPanel.transform.Find("Text").GetComponent<Text>().text = content;
     }
 
-    private void JoinHandler(object target, IActionContext args)
+    private void SubscribeJoinSession(string id)
     {
-        NotificationPanel.transform.Find("Text").GetComponent<Text>().text = "액션 실행 됨! 와!";
+        States.Instance.sessionState.ObserveOnMainThread().Subscribe(state => { UpdateUI(state, id); });
+    }
+
+    public void UpdateUI(SessionState state, string target)
+    {
+        if (state is null)
+        {
+            Debug.LogWarning("State is null.");
+            return;
+        }
+
+        if (!state.sessions.ContainsKey(target))
+        {
+            Notify("해당 세션을 생성하는 데 실패했습니다.");
+        }
+
+        if (state.sessions[target].Count == 2)
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+
+        var content = $"세션 {target}";
+        foreach (var addr in state.sessions[target])
+        {
+            content += $"\n{addr.ToString()}";
+        }
+        Notify(content);
     }
 }
