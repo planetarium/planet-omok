@@ -31,7 +31,7 @@ public class SessionUI : MonoBehaviour
         ActionManager.instance.JoinSesion(SessionTextField.text)
             .Subscribe(eval =>
             {
-                Debug.LogWarning(((SessionState)eval.OutputStates.GetState(SessionState.Address)).sessions.Count);
+
             });
     }
 

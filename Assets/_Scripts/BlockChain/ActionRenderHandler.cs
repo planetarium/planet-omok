@@ -41,15 +41,6 @@ namespace Nekoyume.BlockChain
             _disposables.DisposeAllAndClear();
         }
 
-        private bool ValidateEvaluationForAgentState<T>(ActionBase.ActionEvaluation<T> evaluation) where T : ActionBase
-        {
-            if (States.Instance.agentState.Value == null)
-            {
-                return false;
-            }
-            return evaluation.OutputStates.UpdatedAddresses.Contains(States.Instance.agentState.Value.address);
-        }
-
         private AgentState GetAgentState<T>(ActionBase.ActionEvaluation<T> evaluation) where T : ActionBase
         {
             var agentAddress = States.Instance.agentState.Value.address;
@@ -59,7 +50,6 @@ namespace Nekoyume.BlockChain
         private void SubscribeJoinSession()
         {
             ActionBase.EveryRender<JoinSession>()
-                .Where(ValidateEvaluationForAgentState)
                 .ObserveOnMainThread()
                 .Subscribe(UpdateSessionState).AddTo(_disposables);
         }

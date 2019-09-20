@@ -44,7 +44,7 @@ namespace Nekoyume.Action
                 UnityEngine.Debug.LogWarning("new session");
                 sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
             }
-
+            GameManager.instance.currentSession = sessionID;
             return states.SetState(SessionState.Address, sessionState);
         }
     }

@@ -25,7 +25,6 @@ namespace Nekoyume.BlockChain
 
         private States()
         {
-            sessionState.Value = new SessionState();
             sessionState.Subscribe(SubscribeSession);
         }
 
@@ -36,7 +35,9 @@ namespace Nekoyume.BlockChain
 
         private void SubscribeSession(SessionState state)
         {
-
+            if (state is null)
+                return;
+            Debug.LogWarning(state.sessions[GameManager.instance.currentSession].Count);
         }
     }
 }
