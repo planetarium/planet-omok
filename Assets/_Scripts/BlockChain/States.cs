@@ -1,8 +1,6 @@
-using System.IO;
-using Nekoyume.Action;
+using UnityEngine;
 using Nekoyume.State;
 using UniRx;
-using UnityEngine;
 
 namespace Nekoyume.BlockChain
 {
@@ -22,14 +20,23 @@ namespace Nekoyume.BlockChain
 
         public static readonly States Instance = Singleton.Value;
 
-        public SessionState sessionState;
-        public AgentState agentState;
-        public GameState gameState;
+        public readonly ReactiveProperty<AgentState> agentState = new ReactiveProperty<AgentState>();
+        public readonly ReactiveProperty<SessionState> sessionState = new ReactiveProperty<SessionState>();
 
         private States()
         {
-            sessionState = new SessionState();
+            sessionState.Value = new SessionState();
+            sessionState.Subscribe(SubscribeSession);
         }
 
+        private void SubscribeAgent(AgentState value)
+        {
+            
+        }
+
+        private void SubscribeSession(SessionState state)
+        {
+            Debug.LogWarning(state.sessions.Count);
+        }
     }
 }

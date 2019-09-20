@@ -17,11 +17,11 @@ namespace Nekoyume.State
             }
         );
 
-        public readonly Dictionary<string, List<Address>> sessions;
+        public readonly Dictionary<string, List<Address>> sessions = new Dictionary<string, List<Address>>();
 
         public SessionState() : base(Address)
         {
-            sessions = new Dictionary<string, List<Address>>();
+            
         }
 
         public object Clone()

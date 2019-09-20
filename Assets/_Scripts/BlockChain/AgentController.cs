@@ -116,8 +116,8 @@ namespace Nekoyume.BlockChain
             Agent.PreloadEnded += (_, __) =>
             {
                 // 에이전트의 준비단계가 끝나면 에이전트의 상태를 한 번 동기화 한다.
-                States.Instance.agentState = (AgentState) Agent.GetState(Agent.Address) ??
-                                                   new AgentState(Agent.Address);
+                //States.Instance.agentState = (AgentState) Agent.GetState(Agent.Address) ??
+                //                                   new AgentState(Agent.Address);
                 // 에이전트에 포함된 모든 아바타의 상태를 한 번씩 동기화 한다.
                 /*foreach (var pair in States.Instance.agentState.Value.avatarAddresses)
                 {

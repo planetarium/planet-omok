@@ -28,8 +28,6 @@ namespace Nekoyume.BlockChain
                 sessionID = a_sessionID
             };
             ProcessAction(action);
-
-            ActionBase.AddRenderHandler(ActionBase.ActionType.JoinSession, handler);
         }
         #endregion
     }

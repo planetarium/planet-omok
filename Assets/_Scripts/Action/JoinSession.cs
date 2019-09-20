@@ -12,11 +12,6 @@ namespace Nekoyume.Action
     {
         public string sessionID;
 
-        public JoinSession()
-        {
-            type = ActionType.JoinSession;
-        }
-
         protected override IImmutableDictionary<string, object> PlainValueInternal =>
             new Dictionary<string, object>
             {
