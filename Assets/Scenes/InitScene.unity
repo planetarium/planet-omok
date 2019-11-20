@@ -313,6 +313,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textField: {fileID: 1512232121}
+  currentSession: 
+  sessionUI: {fileID: 0}
 --- !u!1 &1361054624
 GameObject:
   m_ObjectHideFlags: 0

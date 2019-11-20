@@ -235,6 +235,9 @@ namespace Nekoyume.BlockChain
                 {
                     await _swarm.StartAsync();
                 }
+                catch (TaskCanceledException)
+                {
+                }
                 catch (Exception e)
                 {
                     Debug.LogErrorFormat(
