@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Bencodex.Types;
+using LibplanetUnity.Action;
 using Nekoyume.State;
 
 namespace Nekoyume.Action

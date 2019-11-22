@@ -4,7 +4,10 @@ using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
+using LibplanetUnity;
+using LibplanetUnity.Action;
 using Nekoyume.State;
+using UnityEngine;
 
 namespace Nekoyume.Action
 {
@@ -40,7 +43,16 @@ namespace Nekoyume.Action
                 return states.SetState(ctx.Signer, MarkChanged);
             }
 
-            var sessionState = (SessionState)states.GetState(SessionState.Address) ?? new SessionState();
+            SessionState sessionState;
+            if(states.TryGetState(SessionState.Address, out Bencodex.Types.Dictionary bdict))
+            {
+                sessionState = new SessionState(bdict);
+            }
+            else
+            {
+                sessionState = new SessionState();
+            }
+
             if (sessionState.sessions.ContainsKey(sessionID))
             {
                 sessionState.sessions[sessionID].Add(ctx.Signer);
@@ -51,6 +63,28 @@ namespace Nekoyume.Action
             }
             GameManager.instance.currentSession = sessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
+        }
+
+        public override void Render(IActionContext context, IAccountStateDelta nextStates)
+        {
+            SessionState sessionState;
+            if(nextStates.TryGetState(SessionState.Address, out Bencodex.Types.Dictionary bdict))
+            {
+                sessionState = new SessionState(bdict);
+            }
+            else
+            {
+                sessionState = new SessionState();
+            }
+            
+            Agent.instance.RunOnMainThread(() => 
+            {
+                GameManager.instance.sessionUI.UpdateUI(sessionState, sessionID);
+            });
+        }
+
+        public override void Unrender(IActionContext context, IAccountStateDelta nextStates)
+        {
         }
     }
 }

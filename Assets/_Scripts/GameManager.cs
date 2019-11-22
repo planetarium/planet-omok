@@ -1,11 +1,11 @@
 ﻿using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Nekoyume;
-using Nekoyume.BlockChain;
 using System;
 using Omok.UI;
+using LibplanetUnity;
 
-public class GameManager : MonoSingleton<GameManager>
+public class GameManager : Nekoyume.MonoSingleton<GameManager>
 {
     public Text textField;
     public string currentSession;
@@ -19,7 +19,8 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         textField.text = "에이전트 준비중...";
-        Agent.Initialize(AgentInitialized, textField, LoadEnded);
+        Agent.Initialize();
+        Agent.instance.PreloadEnded += LoadEnded;
     }
 
     private void AgentInitialized(bool succeed)
