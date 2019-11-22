@@ -57,7 +57,7 @@ namespace Nekoyume
 
         #region Mono
 
-        protected virtual void Awake()
+        public virtual void Awake()
         {
             if (_instance == null)
             {
