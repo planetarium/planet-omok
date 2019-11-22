@@ -13,7 +13,7 @@ public class GameManager : MonoSingleton<GameManager>
     public string currentSession;
     public SessionUI sessionUI;
 
-    protected override void Awake()
+    public override void Awake()
     {
         base.Awake();
     }
@@ -22,7 +22,7 @@ public class GameManager : MonoSingleton<GameManager>
     void Start()
     {
         textField.text = "에이전트 준비중...";
-        AgentController.Initialize(AgentInitialized, textField, LoadEnded);
+        Agent.Initialize(AgentInitialized, textField, LoadEnded);
     }
 
     // Update is called once per frame

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
+using Bencodex.Types;
 using Libplanet;
 
 namespace Nekoyume.State
@@ -28,5 +29,16 @@ namespace Nekoyume.State
         {
             return MemberwiseClone();
         }
+        
+        public override IValue Serialize() =>
+            new Bencodex.Types.Dictionary(new Dictionary<IKey, IValue>
+            {
+                [(Text) "sessions"] = new Bencodex.Types.Dictionary(sessions.Select(kv =>
+                    new KeyValuePair<IKey, IValue>(
+                        (Text) kv.Key,
+                        kv.Value.Select(addr => addr.Serialize()).Serialize()
+                    )
+                ))
+            }.Union((Bencodex.Types.Dictionary) base.Serialize()));
     }
 }
