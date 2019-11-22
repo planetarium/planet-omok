@@ -19,9 +19,7 @@ namespace Omok.BlockChain
 
         public static readonly States Instance = Singleton.Value;
 
-        public AgentState AgentState;
         public SessionState SessionState;
-        public GameState GameState;
 
         private States()
         {

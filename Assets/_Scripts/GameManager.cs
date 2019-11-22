@@ -4,12 +4,14 @@ using Omok;
 using System;
 using Omok.UI;
 using LibplanetUnity;
+using Omok.Game;
 
 public class GameManager : Omok.MonoSingleton<GameManager>
 {
     public Text textField;
     public string currentSession;
     public SessionUI sessionUI;
+    public Gameboard gameboard;
 
     public override void Awake()
     {

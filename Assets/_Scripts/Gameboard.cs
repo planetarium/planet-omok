@@ -10,6 +10,7 @@ namespace Omok.Game
         public const int BoardHeight = 13;
 
         public OmokNode nodePrefab;
+        public Sprite tempSprite;
         public Sprite blackSprite;
         public Sprite whiteSprite;
         public Transform layout;
@@ -24,6 +25,8 @@ namespace Omok.Game
                 node.SetEnabled(true);
                 node.Init(this, i);
             }
+
+            GameManager.instance.gameboard = this;
         }
 
         public int GetIndex(int x, int y)
@@ -31,14 +34,13 @@ namespace Omok.Game
             return BoardWidth * y + x;
         }
 
-        int i = 0;
-        public void PlaceNode(int index)
+        public void PlaceNode(bool temp, int player, int index)
         {
             var node = _nodePool[index];
-            if (node.Index == -1) return;
-
-            node.SetSprite((i++ & 1) == 0 ? blackSprite : whiteSprite);
-            node.SetEnabled(true);
+            if (!node.Enabled) return;
+            node.SetSprite(temp ? tempSprite : ((player & 1) == 0 ? blackSprite : whiteSprite));
+            node.SetEnabled(false);
+            
         }
     }
 }

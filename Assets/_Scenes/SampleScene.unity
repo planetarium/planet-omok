@@ -296,6 +296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodePrefab: {fileID: 7621127378294014196, guid: 402b9d4d9c3fc274cbde5ccf25c6e5e2,
     type: 3}
+  tempSprite: {fileID: 21300000, guid: 850cd84ac4b28ec4790c3449efefb16d, type: 3}
   blackSprite: {fileID: 21300000, guid: 06e1ca496277f28469c6e61342d2a3d5, type: 3}
   whiteSprite: {fileID: 21300000, guid: ae8e0b154f2186a4cab7547a723a00ce, type: 3}
   layout: {fileID: 1217590292}

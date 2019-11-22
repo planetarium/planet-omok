@@ -1,4 +1,5 @@
 using System.Linq;
+using Libplanet;
 using LibplanetUnity;
 using LibplanetUnity.Action;
 using Omok.Action;
@@ -25,6 +26,16 @@ namespace Omok.BlockChain
             };
             ProcessAction(action);
         }
+
+        public void Place(int index)
+        {
+            var action = new PlaceAction()
+            {
+                Index = index,
+            };
+            ProcessAction(action);
+        }
+        
         #endregion
     }
 }

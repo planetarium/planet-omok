@@ -51,14 +51,13 @@ namespace Omok.UI
             
             if (state.sessions.ContainsKey(target))
             {
-                if (state.sessions[target].Count == 2)
+                if (state.sessions[target].Players.Count == 2)
                 {
-                    States.Instance.GameState = new GameState(GameState.Address);
                     SceneManager.LoadScene("SampleScene");
                 }
 
                 var content = $"세션 {target}";
-                foreach (var addr in state.sessions[target])
+                foreach (var addr in state.sessions[target].Players)
                 {
                     content += $"\n{addr.ToString()}";
                 }

@@ -9,12 +9,13 @@ namespace Omok.Game
     {
         public Image Image;
         public Button Button;
-        public int Index { get; private set; } = -2;
+        public int Index { get; private set; }
+        public bool Enabled { get; private set; }
 
         public void Init(Gameboard board, int index)
         {
             Index = index;
-            Button.onClick.AddListener(() => board.PlaceNode(index));
+            Button.onClick.AddListener(() => board.PlaceNode(true, -1, index));
         }
 
         public void SetSprite(Sprite sprite)
@@ -24,15 +25,7 @@ namespace Omok.Game
 
         public void SetEnabled(bool value)
         {
-            if (value)
-            {
-                Index = -1;
-            }
-            else
-            {
-                Index = -2;
-                Image.overrideSprite = null;
-            }
+            Enabled = value;
         }
     }
 }

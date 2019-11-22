@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using Bencodex.Types;
 using Libplanet;
 
 namespace Omok.State
@@ -18,19 +20,50 @@ namespace Omok.State
             }
         );
 
-        public int turnCount = 0;
-        public readonly Dictionary<int, Address> players;
-        public readonly List<int> gameBoard;
+        public string SessionID;
+        public int Turn;
+        public Address Winner;
+        public List<Address> Players;
+        public List<int> GameBoard;
 
-        public GameState(Address address) : base(address)
+        public GameState(string sessionID) : base(Address)
         {
-            players = new Dictionary<int, Address>();
-            gameBoard = new List<int>();
+            SessionID = sessionID;
+            Turn = 0;
+            Winner = default(Address);
+            Players = new List<Address>();
+            GameBoard = Enumerable.Repeat(-1, 13 * 14).ToList();
+        }
+
+        public GameState(Bencodex.Types.Dictionary bdict) : base(Address)
+        {
+            var rawSessionID = (Bencodex.Types.Text) bdict["sessionID"];
+            var rawTurn = (Integer) bdict["turn"];
+            var rawWinner = (Bencodex.Types.Binary) bdict["winner"];
+            var rawPlayers = (Bencodex.Types.List) bdict["players"];
+            var rawGameBoard = (Bencodex.Types.List) bdict["gameBoard"];
+            SessionID = rawSessionID.Value;
+            Turn = rawTurn.ToInt();
+            Winner = new Address(rawWinner);
+            Players = rawPlayers.ToList(value => new Address((Binary)value));
+            GameBoard = rawGameBoard.ToList(value => value.ToInt());
         }
 
         public object Clone()
         {
             return MemberwiseClone();
         }
+        
+        public override IValue Serialize() =>
+            new Bencodex.Types.Dictionary(new Dictionary<IKey, IValue>
+            {
+                [(Text) "sessionID"] = (Text) SessionID,
+                [(Text) "turn"] = (Integer) Turn,
+                [(Text) "winner"] = Winner.Serialize(),
+                [(Text) "players"] = 
+                    new Bencodex.Types.List(Players.Select(value => value.Serialize())),
+                [(Text) "gameBoard"] =
+                    new Bencodex.Types.List(GameBoard.Select(value => (IValue)((Integer) value))),
+            }.Union((Bencodex.Types.Dictionary) base.Serialize()));
     }
 }

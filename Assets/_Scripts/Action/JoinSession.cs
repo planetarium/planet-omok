@@ -45,11 +45,13 @@ namespace Omok.Action
 
             if (sessionState.sessions.ContainsKey(SessionID))
             {
-                sessionState.sessions[SessionID].Add(ctx.Signer);
+                sessionState.sessions[SessionID].Players.Add(ctx.Signer);
             }
             else
             {
-                sessionState.sessions.Add(SessionID, new List<Address> { ctx.Signer });
+                var gameState = new GameState(SessionID);
+                gameState.Players.Add(ctx.Signer);
+                sessionState.sessions.Add(SessionID, gameState);
             }
             GameManager.instance.currentSession = SessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
