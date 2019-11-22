@@ -47,5 +47,13 @@ namespace Nekoyume.Action
             GameManager.instance.currentSession = sessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
         }
+
+        public override void Render(IActionContext context, IAccountStateDelta nextStates)
+        {
+        }
+
+        public override void Unrender(IActionContext context, IAccountStateDelta nextStates)
+        {
+        }
     }
 }

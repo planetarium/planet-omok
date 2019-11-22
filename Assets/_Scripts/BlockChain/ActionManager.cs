@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Libplanet;
+using LibplanetUnity;
+using LibplanetUnity.Action;
 using Nekoyume.Action;
-using UniRx;
 
 namespace Nekoyume.BlockChain
 {
@@ -14,7 +12,7 @@ namespace Nekoyume.BlockChain
     {
         private static void ProcessAction(GameAction action)
         {
-            Agent.instance.EnqueueAction(action);
+            Agent.instance.MakeTransaction(new[] { action }.Cast<ActionBase>());
         }
 
         #region Actions
