@@ -1,10 +1,9 @@
-﻿using Nekoyume.BlockChain;
+﻿using Omok.BlockChain;
 using UnityEngine;
 using UnityEngine.UI;
 using Libplanet.Action;
-using UniRx;
-using Nekoyume.State;
-using Nekoyume.Action;
+using Omok.State;
+using Omok.Action;
 using UnityEngine.SceneManagement;
 
 namespace Omok.UI
@@ -40,11 +39,6 @@ namespace Omok.UI
         {
             NotificationPanel.SetActive(true);
             NotificationPanel.transform.Find("Text").GetComponent<Text>().text = content;
-        }
-
-        private void SubscribeJoinSession(string id)
-        {
-            States.Instance.sessionState.ObserveOnMainThread().Subscribe(state => { UpdateUI(state, id); });
         }
 
         public void UpdateUI(SessionState state, string target)

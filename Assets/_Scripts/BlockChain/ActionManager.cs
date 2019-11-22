@@ -1,9 +1,9 @@
 using System.Linq;
 using LibplanetUnity;
 using LibplanetUnity.Action;
-using Nekoyume.Action;
+using Omok.Action;
 
-namespace Nekoyume.BlockChain
+namespace Omok.BlockChain
 {
     /// <summary>
     /// 게임의 Action을 생성하고 Agent에 넣어주는 역할을 한다.
@@ -19,7 +19,10 @@ namespace Nekoyume.BlockChain
 
         public void JoinSesion(string sessionID)
         {
-            var action = new JoinSession(sessionID);
+            var action = new JoinSession()
+            {
+                SessionID = sessionID,
+            };
             ProcessAction(action);
         }
         #endregion

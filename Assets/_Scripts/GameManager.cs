@@ -1,11 +1,11 @@
 ﻿using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Nekoyume;
+using Omok;
 using System;
 using Omok.UI;
 using LibplanetUnity;
 
-public class GameManager : Nekoyume.MonoSingleton<GameManager>
+public class GameManager : Omok.MonoSingleton<GameManager>
 {
     public Text textField;
     public string currentSession;

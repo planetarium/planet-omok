@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nekoyume
+namespace Omok
 {
     public static class GenericExtension
     {   

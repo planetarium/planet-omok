@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Bencodex.Types;
 using Libplanet;
 
-namespace Nekoyume.State
+namespace Omok.State
 {
     [Serializable]
     public abstract class State

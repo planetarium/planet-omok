@@ -1,5 +1,5 @@
-﻿using Nekoyume.BlockChain;
-using Nekoyume.State;
+﻿using Omok.BlockChain;
+using Omok.State;
 using UnityEngine;
 
 namespace Omok.Game
@@ -24,7 +24,7 @@ namespace Omok.Game
                 node.SetEnabled(true);
                 node.Init(this, i);
             }
-            States.Instance.gameState.Value = new GameState(GameState.Address);
+            States.Instance.GameState = new GameState(GameState.Address);
         }
 
         public int GetIndex(int x, int y)

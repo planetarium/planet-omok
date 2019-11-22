@@ -5,7 +5,7 @@ using System.Linq;
 using Bencodex.Types;
 using Libplanet;
 
-namespace Nekoyume.State
+namespace Omok.State
 {
     /// <summary>
     /// 세션의 상태 모델이다.

@@ -7,7 +7,7 @@ namespace LibplanetUnity.Editor
 {
     public class Builder {
 
-        public static string PlayerName = "PlanetClicker";
+        public static string PlayerName = "PlanetOmok";
 
         [MenuItem("Build/Windows + Mac OSX")]
         public static void BuildAll()
@@ -42,7 +42,7 @@ namespace LibplanetUnity.Editor
             BuildOptions options = BuildOptions.None,
             string targetDirName = null)
         {
-            string[] scenes = { "Assets/Scenes/Game.unity" };
+            string[] scenes = { "Assets/_Scenes/InitScene.unity" };
             const string basePath = "Build";
             string locationPathName = Path.Combine(
                 basePath,

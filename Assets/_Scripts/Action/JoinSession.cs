@@ -1,36 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using LibplanetUnity;
 using LibplanetUnity.Action;
-using Nekoyume.State;
-using UnityEngine;
+using Omok.State;
 
-namespace Nekoyume.Action
+namespace Omok.Action
 {
     [ActionType("join_session")]
     public class JoinSession : GameAction
     {
-        public string sessionID;
-
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
             new Dictionary<string, IValue>
             {
-                ["sessionID"] = new Bencodex.Types.Text(sessionID),
+                ["sessionID"] = new Bencodex.Types.Text(SessionID),
             }.ToImmutableDictionary();
 
-        public JoinSession(string sessionID) : base(sessionID)
+        public JoinSession()
         {
-            
         }
-
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
-            sessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
+            SessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)
@@ -53,15 +47,15 @@ namespace Nekoyume.Action
                 sessionState = new SessionState();
             }
 
-            if (sessionState.sessions.ContainsKey(sessionID))
+            if (sessionState.sessions.ContainsKey(SessionID))
             {
-                sessionState.sessions[sessionID].Add(ctx.Signer);
+                sessionState.sessions[SessionID].Add(ctx.Signer);
             }
             else
             {
-                sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
+                sessionState.sessions.Add(SessionID, new List<Address> { ctx.Signer });
             }
-            GameManager.instance.currentSession = sessionID;
+            GameManager.instance.currentSession = SessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
         }
 
@@ -79,7 +73,7 @@ namespace Nekoyume.Action
             
             Agent.instance.RunOnMainThread(() => 
             {
-                GameManager.instance.sessionUI.UpdateUI(sessionState, sessionID);
+                GameManager.instance.sessionUI?.UpdateUI(sessionState, SessionID);
             });
         }
 

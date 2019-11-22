@@ -1,7 +1,7 @@
 ﻿using Serilog.Core;
 using Serilog.Events;
 
-namespace Nekoyume.Serilog
+namespace Omok.Serilog
 {
     internal class UnityDebugSink : ILogEventSink
     {
