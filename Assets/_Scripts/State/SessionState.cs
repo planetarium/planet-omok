@@ -28,13 +28,10 @@ namespace Nekoyume.State
 
         public SessionState(Bencodex.Types.Dictionary bdict) : base(Address)
         {
-            var dict = bdict
-                   .Select(kv => new KeyValuePair<string, IValue>((Text)kv.Key, kv.Value))
-                   .ToImmutableDictionary();
-            sessions = new Dictionary<string, List<Address>>();
-            ((Bencodex.Types.Dictionary)dict["sessions"]).Select(kv =>
-                 sessions[((Bencodex.Types.Text)kv.Key).Value] = 
-                    ((Bencodex.Types.List)kv.Value).Select(addr => addr.ToAddress()).ToList()
+            var rawSessions = (Bencodex.Types.Dictionary) bdict["sessions"];
+            sessions = rawSessions.ToDictionary(
+                kv => kv.Key.ToString(),
+                kv => ((Bencodex.Types.List)kv.Value).Select(b => new Address(((Binary)b).Value)).ToList()
             );
         }
 
