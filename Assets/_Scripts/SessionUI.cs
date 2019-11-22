@@ -68,7 +68,7 @@ public class SessionUI : MonoBehaviour
 
         if (state.sessions[target].Count == 2)
         {
-            SceneManager.LoadScene("SampleScene");
+            //SceneManager.LoadScene("SampleScene");
         }
 
         var content = $"세션 {target}";
