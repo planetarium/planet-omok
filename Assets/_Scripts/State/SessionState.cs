@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Bencodex.Types;
 using Libplanet;
@@ -22,7 +23,19 @@ namespace Nekoyume.State
 
         public SessionState() : base(Address)
         {
-            
+
+        }
+
+        public SessionState(Bencodex.Types.Dictionary bdict) : base(Address)
+        {
+            var dict = bdict
+                   .Select(kv => new KeyValuePair<string, IValue>((Text)kv.Key, kv.Value))
+                   .ToImmutableDictionary();
+            sessions = new Dictionary<string, List<Address>>();
+            ((Bencodex.Types.Dictionary)dict["sessions"]).Select(kv =>
+                 sessions[((Bencodex.Types.Text)kv.Key).Value] = 
+                    ((Bencodex.Types.List)kv.Value).Select(addr => addr.ToAddress()).ToList()
+            );
         }
 
         public object Clone()
