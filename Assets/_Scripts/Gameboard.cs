@@ -24,7 +24,6 @@ namespace Omok.Game
                 node.SetEnabled(true);
                 node.Init(this, i);
             }
-            States.Instance.GameState = new GameState(GameState.Address);
         }
 
         public int GetIndex(int x, int y)
@@ -36,7 +35,7 @@ namespace Omok.Game
         public void PlaceNode(int index)
         {
             var node = _nodePool[index];
-            if (node.index == -1) return;
+            if (node.Index == -1) return;
 
             node.SetSprite((i++ & 1) == 0 ? blackSprite : whiteSprite);
             node.SetEnabled(true);

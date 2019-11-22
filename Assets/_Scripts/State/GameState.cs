@@ -11,22 +11,20 @@ namespace Omok.State
     [Serializable]
     public class GameState : State, ICloneable
     {
+        // FIXME: This should be distinguishable for each session
         public static readonly Address Address = new Address(new byte[]
             {
                 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1
             }
         );
 
-        //F&F 테스트용 노마이너 기본 소지 골드
         public int turnCount = 0;
         public readonly Dictionary<int, Address> players;
-        public readonly Dictionary<int, PlayerState> playerStates;
         public readonly List<int> gameBoard;
 
         public GameState(Address address) : base(address)
         {
             players = new Dictionary<int, Address>();
-            playerStates = new Dictionary<int, PlayerState>();
             gameBoard = new List<int>();
         }
 

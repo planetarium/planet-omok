@@ -13,10 +13,7 @@ namespace Omok.Action
     public class JoinSession : GameAction
     {
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
-            new Dictionary<string, IValue>
-            {
-                ["sessionID"] = new Bencodex.Types.Text(SessionID),
-            }.ToImmutableDictionary();
+            ImmutableDictionary<string, IValue>.Empty;
 
         public JoinSession()
         {
@@ -24,7 +21,6 @@ namespace Omok.Action
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
-            SessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)

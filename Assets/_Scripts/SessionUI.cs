@@ -53,6 +53,7 @@ namespace Omok.UI
             {
                 if (state.sessions[target].Count == 2)
                 {
+                    States.Instance.GameState = new GameState(GameState.Address);
                     SceneManager.LoadScene("SampleScene");
                 }
 

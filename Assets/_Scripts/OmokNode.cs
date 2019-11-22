@@ -7,31 +7,31 @@ namespace Omok.Game
 {
     public class OmokNode : MonoBehaviour
     {
-        public Image image;
-        public Button button;
-        public int index = -2;
+        public Image Image;
+        public Button Button;
+        public int Index { get; private set; } = -2;
 
         public void Init(Gameboard board, int index)
         {
-            this.index = index;
-            button.onClick.AddListener(() => board.PlaceNode(index));
+            Index = index;
+            Button.onClick.AddListener(() => board.PlaceNode(index));
         }
 
         public void SetSprite(Sprite sprite)
         {
-            image.overrideSprite = sprite;
+            Image.overrideSprite = sprite;
         }
 
         public void SetEnabled(bool value)
         {
             if (value)
             {
-                index = -1;
+                Index = -1;
             }
             else
             {
-                index = -2;
-                image.overrideSprite = null;
+                Index = -2;
+                Image.overrideSprite = null;
             }
         }
     }
