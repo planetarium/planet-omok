@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Immutable;
+using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using UniRx;
@@ -9,10 +9,10 @@ namespace Nekoyume.Action
     [Serializable]
     public abstract class ActionBase : IAction
     {
-        public const string MarkChanged = "";
-
-        public abstract IImmutableDictionary<string, object> PlainValue { get; }
-        public abstract void LoadPlainValue(IImmutableDictionary<string, object> plainValue);
+        public static readonly IValue MarkChanged = default(Null);
+        
+        public abstract IValue PlainValue { get; }
+        public abstract void LoadPlainValue(IValue plainValue);
         public abstract IAccountStateDelta Execute(IActionContext ctx);
 
         public struct ActionEvaluation<T>
@@ -46,7 +46,7 @@ namespace Nekoyume.Action
                 InputContext = context,
                 OutputStates = nextStates,
             });
-
+            
         }
 
         public static IObservable<ActionEvaluation<T>> EveryRender<T>()
@@ -56,7 +56,7 @@ namespace Nekoyume.Action
                 eval => eval.Action is T
             ).Select(eval => new ActionEvaluation<T>
             {
-                Action = (T)eval.Action,
+                Action = (T) eval.Action,
                 InputContext = eval.InputContext,
                 OutputStates = eval.OutputStates,
             });
@@ -69,7 +69,7 @@ namespace Nekoyume.Action
                 eval => eval.Action is T
             ).Select(eval => new ActionEvaluation<T>
             {
-                Action = (T)eval.Action,
+                Action = (T) eval.Action,
                 InputContext = eval.InputContext,
                 OutputStates = eval.OutputStates,
             });

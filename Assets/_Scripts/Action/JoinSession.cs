@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using Nekoyume.State;
@@ -12,16 +13,16 @@ namespace Nekoyume.Action
     {
         public string sessionID;
 
-        protected override IImmutableDictionary<string, object> PlainValueInternal =>
-            new Dictionary<string, object>
+        protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+            new Dictionary<string, IValue>
             {
-                ["sessionID"] = ByteSerializer.Serialize(sessionID),
+                ["sessionID"] = new Bencodex.Types.Text(sessionID),
             }.ToImmutableDictionary();
 
 
-        protected override void LoadPlainValueInternal(IImmutableDictionary<string, object> plainValue)
+        protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
-            sessionID = ByteSerializer.Deserialize<string>((byte[])plainValue["sessionID"]);
+            sessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)
@@ -44,7 +45,7 @@ namespace Nekoyume.Action
                 sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
             }
             GameManager.instance.currentSession = sessionID;
-            return states.SetState(SessionState.Address, sessionState);
+            return states.SetState(SessionState.Address, sessionState.Serialize());
         }
     }
 }
