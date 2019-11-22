@@ -19,12 +19,9 @@ namespace Nekoyume.BlockChain
 
         #region Actions
 
-        public void JoinSesion(string a_sessionID)
+        public void JoinSesion(string sessionID)
         {
-            var action = new JoinSession
-            {
-                sessionID = a_sessionID,
-            };
+            var action = new JoinSession(sessionID);
             ProcessAction(action);
         }
         #endregion
