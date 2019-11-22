@@ -9,19 +9,7 @@ namespace Omok.Game
     {
         public Image image;
         public Button button;
-        public int index;
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        public int index = -2;
 
         public void Init(Gameboard board, int index)
         {
@@ -31,12 +19,20 @@ namespace Omok.Game
 
         public void SetSprite(Sprite sprite)
         {
-            image.sprite = sprite;
+            image.overrideSprite = sprite;
         }
 
         public void SetEnabled(bool value)
         {
-            image.enabled = value;
+            if (value)
+            {
+                index = -1;
+            }
+            else
+            {
+                index = -2;
+                image.overrideSprite = null;
+            }
         }
     }
 }
