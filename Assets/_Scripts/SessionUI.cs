@@ -7,75 +7,78 @@ using Nekoyume.State;
 using Nekoyume.Action;
 using UnityEngine.SceneManagement;
 
-public class SessionUI : MonoBehaviour
+namespace Omok.UI
 {
-    public Text SessionTextField;
-    public Button EnterButton;
-    public GameObject NotificationPanel;
-    //private string target;
-
-    // Start is called before the first frame update
-    void Start()
+    public class SessionUI : MonoBehaviour
     {
-        NotificationPanel.SetActive(false);
-        EnterButton.onClick.AddListener(ClickHandler);
-    }
+        public Text SessionTextField;
+        public Button EnterButton;
+        public GameObject NotificationPanel;
+        //private string target;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    private void OnDestroy()
-    {
-        GameManager.instance.sessionUI = null;
-    }
-
-    private void ClickHandler()
-    {
-        Notify("세션 참여 중입니다");
-        var sessionID = SessionTextField.text;
-        //target = sessionID;
-        SubscribeJoinSession(sessionID);
-        GameManager.instance.sessionUI = this;
-        ActionManager.instance.JoinSesion(sessionID);
-    }
-
-    private void Notify(string content)
-    {
-        NotificationPanel.SetActive(true);
-        NotificationPanel.transform.Find("Text").GetComponent<Text>().text = content;
-    }
-
-    private void SubscribeJoinSession(string id)
-    {
-        States.Instance.sessionState.ObserveOnMainThread().Subscribe(state => { UpdateUI(state, id); });
-    }
-
-    public void UpdateUI(SessionState state, string target)
-    {
-        if (state is null)
+        // Start is called before the first frame update
+        void Start()
         {
-            Debug.LogWarning("State is null.");
-            return;
+            NotificationPanel.SetActive(false);
+            EnterButton.onClick.AddListener(ClickHandler);
         }
 
-        if (!state.sessions.ContainsKey(target))
+        // Update is called once per frame
+        void Update()
         {
-            Notify("해당 세션을 생성하는 데 실패했습니다.");
+
         }
 
-        if (state.sessions[target].Count == 2)
+        private void OnDestroy()
         {
-            //SceneManager.LoadScene("SampleScene");
+            GameManager.instance.sessionUI = null;
         }
 
-        var content = $"세션 {target}";
-        foreach (var addr in state.sessions[target])
+        private void ClickHandler()
         {
-            content += $"\n{addr.ToString()}";
+            Notify("세션 참여 중입니다");
+            var sessionID = SessionTextField.text;
+            //target = sessionID;
+            SubscribeJoinSession(sessionID);
+            GameManager.instance.sessionUI = this;
+            ActionManager.instance.JoinSesion(sessionID);
         }
-        Notify(content);
+
+        private void Notify(string content)
+        {
+            NotificationPanel.SetActive(true);
+            NotificationPanel.transform.Find("Text").GetComponent<Text>().text = content;
+        }
+
+        private void SubscribeJoinSession(string id)
+        {
+            States.Instance.sessionState.ObserveOnMainThread().Subscribe(state => { UpdateUI(state, id); });
+        }
+
+        public void UpdateUI(SessionState state, string target)
+        {
+            if (state is null)
+            {
+                Debug.LogWarning("State is null.");
+                return;
+            }
+
+            if (!state.sessions.ContainsKey(target))
+            {
+                Notify("해당 세션을 생성하는 데 실패했습니다.");
+            }
+
+            if (state.sessions[target].Count == 2)
+            {
+                SceneManager.LoadScene("SampleScene");
+            }
+
+            var content = $"세션 {target}";
+            foreach (var addr in state.sessions[target])
+            {
+                content += $"\n{addr.ToString()}";
+            }
+            Notify(content);
+        }
     }
 }

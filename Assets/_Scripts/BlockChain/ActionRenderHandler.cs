@@ -56,7 +56,7 @@ namespace Nekoyume.BlockChain
 
         private static void UpdateSessionState(ActionBase.ActionEvaluation<JoinSession> action)
         {
-            States.Instance.sessionState.Value = (SessionState)action.OutputStates.GetState(SessionState.Address);
+            States.Instance.sessionState.Value = (SessionState) action.OutputStates.GetState(SessionState.Address);
         }
     }
 }

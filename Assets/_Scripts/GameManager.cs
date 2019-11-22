@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Nekoyume;
 using Nekoyume.BlockChain;
 using System;
+using Omok.UI;
 
 public class GameManager : MonoSingleton<GameManager>
 {
@@ -18,17 +16,10 @@ public class GameManager : MonoSingleton<GameManager>
         base.Awake();
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         textField.text = "에이전트 준비중...";
         Agent.Initialize(AgentInitialized, textField, LoadEnded);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void AgentInitialized(bool succeed)

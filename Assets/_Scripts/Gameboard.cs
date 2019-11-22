@@ -1,16 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Nekoyume.BlockChain;
+using Nekoyume.State;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Omok.Game
 {
     public class Gameboard : MonoBehaviour
     {
-        public const int BoardWidth = 13;
+        public const int BoardWidth = 14;
         public const int BoardHeight = 13;
 
-        public readonly OmokNode[,] board = new OmokNode[BoardWidth, BoardHeight];
         public OmokNode nodePrefab;
         public Sprite blackSprite;
         public Sprite whiteSprite;
@@ -23,16 +21,10 @@ namespace Omok.Game
             for (int i = 0; i < _nodePool.Length; ++i)
             {
                 var node = _nodePool[i] = Instantiate(nodePrefab, layout);
-                node.SetEnabled(false);
+                node.SetEnabled(true);
                 node.Init(this, i);
             }
-            
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            States.Instance.gameState.Value = new GameState(GameState.Address);
         }
 
         public int GetIndex(int x, int y)
@@ -44,6 +36,8 @@ namespace Omok.Game
         public void PlaceNode(int index)
         {
             var node = _nodePool[index];
+            if (node.index == -1) return;
+
             node.SetSprite((i++ & 1) == 0 ? blackSprite : whiteSprite);
             node.SetEnabled(true);
         }

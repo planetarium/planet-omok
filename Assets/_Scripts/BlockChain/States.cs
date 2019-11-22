@@ -22,6 +22,7 @@ namespace Nekoyume.BlockChain
 
         public readonly ReactiveProperty<AgentState> agentState = new ReactiveProperty<AgentState>();
         public readonly ReactiveProperty<SessionState> sessionState = new ReactiveProperty<SessionState>();
+        public readonly ReactiveProperty<GameState> gameState = new ReactiveProperty<GameState>();
 
         private States()
         {
