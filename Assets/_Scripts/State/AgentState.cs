@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using Libplanet;
 
-namespace Nekoyume.State
+namespace Omok.State
 {
     /// <summary>
     /// Agent의 상태 모델이다.

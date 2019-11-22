@@ -1,10 +1,9 @@
-﻿using Nekoyume.BlockChain;
+﻿using Omok.BlockChain;
 using UnityEngine;
 using UnityEngine.UI;
 using Libplanet.Action;
-using UniRx;
-using Nekoyume.State;
-using Nekoyume.Action;
+using Omok.State;
+using Omok.Action;
 using UnityEngine.SceneManagement;
 
 namespace Omok.UI
@@ -13,6 +12,7 @@ namespace Omok.UI
     {
         public Text SessionTextField;
         public Button EnterButton;
+
         public GameObject NotificationPanel;
         //private string target;
 
@@ -23,10 +23,11 @@ namespace Omok.UI
             EnterButton.onClick.AddListener(ClickHandler);
         }
 
-        // Update is called once per frame
-        void Update()
+        private void ClickHandler()
         {
-
+            Notify("세션 참여 중입니다");
+            GameManager.instance.sessionUI = this;
+            ActionManager.instance.JoinSesion(SessionTextField.text);
         }
 
         private void OnDestroy()
@@ -34,25 +35,10 @@ namespace Omok.UI
             GameManager.instance.sessionUI = null;
         }
 
-        private void ClickHandler()
-        {
-            Notify("세션 참여 중입니다");
-            var sessionID = SessionTextField.text;
-            //target = sessionID;
-            SubscribeJoinSession(sessionID);
-            GameManager.instance.sessionUI = this;
-            ActionManager.instance.JoinSesion(sessionID);
-        }
-
         private void Notify(string content)
         {
             NotificationPanel.SetActive(true);
             NotificationPanel.transform.Find("Text").GetComponent<Text>().text = content;
-        }
-
-        private void SubscribeJoinSession(string id)
-        {
-            States.Instance.sessionState.ObserveOnMainThread().Subscribe(state => { UpdateUI(state, id); });
         }
 
         public void UpdateUI(SessionState state, string target)
@@ -62,23 +48,26 @@ namespace Omok.UI
                 Debug.LogWarning("State is null.");
                 return;
             }
+            
+            if (state.sessions.ContainsKey(target))
+            {
+                if (state.sessions[target].Count == 2)
+                {
+                    SceneManager.LoadScene("SampleScene");
+                }
 
-            if (!state.sessions.ContainsKey(target))
+                var content = $"세션 {target}";
+                foreach (var addr in state.sessions[target])
+                {
+                    content += $"\n{addr.ToString()}";
+                }
+
+                Notify(content);
+            }
+            else
             {
                 Notify("해당 세션을 생성하는 데 실패했습니다.");
             }
-
-            if (state.sessions[target].Count == 2)
-            {
-                SceneManager.LoadScene("SampleScene");
-            }
-
-            var content = $"세션 {target}";
-            foreach (var addr in state.sessions[target])
-            {
-                content += $"\n{addr.ToString()}";
-            }
-            Notify(content);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 using Bencodex.Types;
 using Libplanet;
 
-namespace Nekoyume.State
+namespace Omok.State
 {
     public static class StateExtensions
     {

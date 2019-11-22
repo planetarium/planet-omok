@@ -1,33 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
-using Nekoyume.State;
+using LibplanetUnity;
+using LibplanetUnity.Action;
+using Omok.State;
 
-namespace Nekoyume.Action
+namespace Omok.Action
 {
     [ActionType("join_session")]
     public class JoinSession : GameAction
     {
-        public string sessionID;
-
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
             new Dictionary<string, IValue>
             {
-                ["sessionID"] = new Bencodex.Types.Text(sessionID),
+                ["sessionID"] = new Bencodex.Types.Text(SessionID),
             }.ToImmutableDictionary();
 
-        public JoinSession(string sessionID) : base(sessionID)
+        public JoinSession()
         {
-            
         }
-
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
-            sessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
+            SessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)
@@ -40,17 +37,48 @@ namespace Nekoyume.Action
                 return states.SetState(ctx.Signer, MarkChanged);
             }
 
-            var sessionState = (SessionState)states.GetState(SessionState.Address) ?? new SessionState();
-            if (sessionState.sessions.ContainsKey(sessionID))
+            SessionState sessionState;
+            if(states.TryGetState(SessionState.Address, out Bencodex.Types.Dictionary bdict))
             {
-                sessionState.sessions[sessionID].Add(ctx.Signer);
+                sessionState = new SessionState(bdict);
             }
             else
             {
-                sessionState.sessions.Add(sessionID, new List<Address> { ctx.Signer });
+                sessionState = new SessionState();
             }
-            GameManager.instance.currentSession = sessionID;
+
+            if (sessionState.sessions.ContainsKey(SessionID))
+            {
+                sessionState.sessions[SessionID].Add(ctx.Signer);
+            }
+            else
+            {
+                sessionState.sessions.Add(SessionID, new List<Address> { ctx.Signer });
+            }
+            GameManager.instance.currentSession = SessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
+        }
+
+        public override void Render(IActionContext context, IAccountStateDelta nextStates)
+        {
+            SessionState sessionState;
+            if(nextStates.TryGetState(SessionState.Address, out Bencodex.Types.Dictionary bdict))
+            {
+                sessionState = new SessionState(bdict);
+            }
+            else
+            {
+                sessionState = new SessionState();
+            }
+            
+            Agent.instance.RunOnMainThread(() => 
+            {
+                GameManager.instance.sessionUI?.UpdateUI(sessionState, SessionID);
+            });
+        }
+
+        public override void Unrender(IActionContext context, IAccountStateDelta nextStates)
+        {
         }
     }
 }

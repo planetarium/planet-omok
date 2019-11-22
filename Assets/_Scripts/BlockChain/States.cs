@@ -1,8 +1,7 @@
 using UnityEngine;
-using Nekoyume.State;
-using UniRx;
+using Omok.State;
 
-namespace Nekoyume.BlockChain
+namespace Omok.BlockChain
 {
     /// <summary>
     /// 각 주소 고유의 상태들을 모아서 데이터 지역성을 확보한다.
@@ -20,24 +19,12 @@ namespace Nekoyume.BlockChain
 
         public static readonly States Instance = Singleton.Value;
 
-        public readonly ReactiveProperty<AgentState> agentState = new ReactiveProperty<AgentState>();
-        public readonly ReactiveProperty<SessionState> sessionState = new ReactiveProperty<SessionState>();
-        public readonly ReactiveProperty<GameState> gameState = new ReactiveProperty<GameState>();
+        public AgentState AgentState;
+        public SessionState SessionState;
+        public GameState GameState;
 
         private States()
         {
-            sessionState.Subscribe(SubscribeSession);
-        }
-
-        private void SubscribeAgent(AgentState value)
-        {
-            
-        }
-
-        private void SubscribeSession(SessionState state)
-        {
-            if (state is null)
-                return;
         }
     }
 }

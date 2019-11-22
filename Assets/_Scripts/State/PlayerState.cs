@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Nekoyume.State
+namespace Omok.State
 {
     [Serializable]
     public class PlayerState

@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Libplanet;
-using Nekoyume.Action;
-using UniRx;
+using LibplanetUnity;
+using LibplanetUnity.Action;
+using Omok.Action;
 
-namespace Nekoyume.BlockChain
+namespace Omok.BlockChain
 {
     /// <summary>
     /// 게임의 Action을 생성하고 Agent에 넣어주는 역할을 한다.
@@ -14,14 +12,17 @@ namespace Nekoyume.BlockChain
     {
         private static void ProcessAction(GameAction action)
         {
-            Agent.instance.EnqueueAction(action);
+            Agent.instance.MakeTransaction(new[] { action }.Cast<ActionBase>());
         }
 
         #region Actions
 
         public void JoinSesion(string sessionID)
         {
-            var action = new JoinSession(sessionID);
+            var action = new JoinSession()
+            {
+                SessionID = sessionID,
+            };
             ProcessAction(action);
         }
         #endregion

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Nekoyume.Action
+namespace Omok.Action
 {
     internal static class ByteSerializer
     {
