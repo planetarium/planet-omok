@@ -10,18 +10,22 @@ namespace Nekoyume.Action
     [Serializable]
     public abstract class GameAction : ActionBase
     {
+        public string sessionId;
         public Guid Id { get; private set; }
+
         public override IValue PlainValue =>
             new Bencodex.Types.Dictionary(
                 PlainValueInternal
                     .SetItem("id", Id.Serialize())
+                    .SetItem("sessionID", (Text) sessionId)
                     .Select(kv => new KeyValuePair<IKey, IValue>((Text) kv.Key, kv.Value))
             );
         protected abstract IImmutableDictionary<string, IValue> PlainValueInternal { get; }
 
-        protected GameAction()
+        protected GameAction(string sessionID)
         {
             Id = Guid.NewGuid();
+            this.sessionId = sessionId;
         }
 
         public override void LoadPlainValue(IValue plainValue)
@@ -30,6 +34,7 @@ namespace Nekoyume.Action
                 .Select(kv => new KeyValuePair<string, IValue>((Text) kv.Key, kv.Value))
                 .ToImmutableDictionary();
             Id = dict["id"].ToGuid();
+            sessionId = ((Text) dict["sessionID"]).Value;
             LoadPlainValueInternal(dict);
         }
         

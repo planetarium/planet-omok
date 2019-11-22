@@ -19,6 +19,11 @@ namespace Nekoyume.Action
                 ["sessionID"] = new Bencodex.Types.Text(sessionID),
             }.ToImmutableDictionary();
 
+        public JoinSession(string sessionID) : base(sessionID)
+        {
+            
+        }
+
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
