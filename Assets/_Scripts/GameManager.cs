@@ -1,6 +1,5 @@
 ﻿using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Omok;
 using System;
 using Omok.UI;
 using LibplanetUnity;
@@ -11,6 +10,7 @@ public class GameManager : Omok.MonoSingleton<GameManager>
     public Text textField;
     public string currentSession;
     public SessionUI sessionUI;
+    public bool isMyTurn;
     public Gameboard gameboard;
 
     public override void Awake()
@@ -20,7 +20,7 @@ public class GameManager : Omok.MonoSingleton<GameManager>
 
     void Start()
     {
-        textField.text = "에이전트 준비중...";
+        textField.text = "Preparing agent...";
         Agent.Initialize();
         Agent.instance.PreloadEnded += LoadEnded;
     }
@@ -29,16 +29,21 @@ public class GameManager : Omok.MonoSingleton<GameManager>
     {
         if (succeed)
         {
-            textField.text = "에이전트 준비 성공";
+            textField.text = "Agent is ready.";
         }
         else
         {
-            textField.text = "에이전트 준비 실패";
+            textField.text = "Failed to initialize agent.";
         }
     }
 
     private void LoadEnded(object target, EventArgs args)
     {
         SceneManager.LoadScene("EnterSession");
+    }
+
+    public void SetMyTurn(bool value)
+    {
+        isMyTurn = value;
     }
 }

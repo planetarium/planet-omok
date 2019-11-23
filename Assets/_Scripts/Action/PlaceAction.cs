@@ -19,7 +19,7 @@ namespace Omok.Action
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
             new Dictionary<string, IValue>()
             {
-                ["index"] = (Bencodex.Types.Integer)Index,
+                ["index"] = (Integer)Index,
             }.ToImmutableDictionary();
 
         public PlaceAction()
@@ -28,6 +28,7 @@ namespace Omok.Action
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
+            Index = ((Integer)plainValue["index"]).ToInt();
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)
@@ -41,9 +42,10 @@ namespace Omok.Action
             }
 
             GameState gameState;
+            SessionState sessionState;
             if (states.TryGetState(SessionState.Address, out Bencodex.Types.Dictionary bdict))
             {
-                var sessionState = new SessionState(bdict);
+                sessionState = new SessionState(bdict);
                 sessionState.sessions.TryGetValue(SessionID, out gameState);
             }
             else
@@ -57,7 +59,7 @@ namespace Omok.Action
                 return states;
             }
 
-            if (gameState.Players.Contains(ctx.Signer))
+            if (!gameState.Players.Contains(ctx.Signer))
             {
                 Debug.Log("Signer does not belongs to session.");
             }
@@ -78,8 +80,9 @@ namespace Omok.Action
                 var playerIndex = gameState.Players[0] == ctx.Signer ? 0 : 1;
                 gameState.GameBoard[Index] = playerIndex;
                 gameState.Turn = 1 - gameState.Turn;
+                sessionState.sessions[SessionID] = gameState;
             }
-            return states.SetState(GameState.Address, gameState.Serialize());
+            return states.SetState(SessionState.Address, sessionState.Serialize());
         }
 
         public override void Render(IActionContext context, IAccountStateDelta nextStates)
@@ -104,9 +107,11 @@ namespace Omok.Action
 
             if (gameState.SessionID == GameManager.instance.currentSession)
             {
-                Agent.instance.RunOnMainThread(() => 
+                Agent.instance.RunOnMainThread(() =>
                 {
                     GameManager.instance.gameboard?.PlaceNode(false, gameState.Turn, Index);
+                    GameManager.instance.SetMyTurn(gameState.Turn == gameState.Players.IndexOf(Agent.instance.Address));
+                    GameManager.instance.gameboard.UpdateInfo();
                 });
             }
         }
