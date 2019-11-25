@@ -1,10 +1,9 @@
 ﻿using Omok.BlockChain;
 using UnityEngine;
 using UnityEngine.UI;
-using Libplanet.Action;
 using Omok.State;
-using Omok.Action;
 using UnityEngine.SceneManagement;
+using LibplanetUnity;
 
 namespace Omok.UI
 {
@@ -14,9 +13,7 @@ namespace Omok.UI
         public Button EnterButton;
 
         public GameObject NotificationPanel;
-        //private string target;
 
-        // Start is called before the first frame update
         void Start()
         {
             NotificationPanel.SetActive(false);
@@ -25,8 +22,14 @@ namespace Omok.UI
 
         private void ClickHandler()
         {
-            Notify("세션 참여 중입니다");
+            if(SessionTextField.text == "")
+            {
+                Debug.LogError("Session ID should not be empty.");
+                return;
+            }
+
             GameManager.instance.sessionUI = this;
+            Notify($"Joining Session: {SessionTextField.text}");
             ActionManager.instance.JoinSesion(SessionTextField.text);
         }
 
@@ -48,16 +51,26 @@ namespace Omok.UI
                 Debug.LogWarning("State is null.");
                 return;
             }
-            
+
             if (state.sessions.ContainsKey(target))
             {
-                if (state.sessions[target].Count == 2)
+                if (state.sessions[target].Players.Count == 2)
                 {
                     SceneManager.LoadScene("SampleScene");
+
+                    var players = state.sessions[GameManager.instance.currentSession].Players;
+                    if (!players.Contains(Agent.instance.Address))
+                    {
+                        Debug.LogError("Address does not exist in players.");
+                    }
+
+                    GameManager.instance.SetMyTurn(
+                        state.sessions[GameManager.instance.currentSession].Turn ==
+                        players.IndexOf(Agent.instance.Address));
                 }
 
-                var content = $"세션 {target}";
-                foreach (var addr in state.sessions[target])
+                var content = $"Session: {target}";
+                foreach (var addr in state.sessions[target].Players)
                 {
                     content += $"\n{addr.ToString()}";
                 }
@@ -66,7 +79,7 @@ namespace Omok.UI
             }
             else
             {
-                Notify("해당 세션을 생성하는 데 실패했습니다.");
+                Notify($"Failed to create session: {target}");
             }
         }
     }

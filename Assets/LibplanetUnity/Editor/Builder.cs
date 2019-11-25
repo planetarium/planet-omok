@@ -42,7 +42,7 @@ namespace LibplanetUnity.Editor
             BuildOptions options = BuildOptions.None,
             string targetDirName = null)
         {
-            string[] scenes = { "Assets/_Scenes/InitScene.unity" };
+            string[] scenes = { "Assets/Scenes/InitScene.unity" };
             const string basePath = "Build";
             string locationPathName = Path.Combine(
                 basePath,

@@ -25,6 +25,26 @@ namespace Omok.BlockChain
             };
             ProcessAction(action);
         }
+
+        public void Place(int index)
+        {
+            var action = new PlaceAction()
+            {
+                SessionID = GameManager.instance.currentSession,
+                Index = index,
+            };
+            ProcessAction(action);
+        }
+
+        public void Resign()
+        {
+            var action = new ResignAction()
+            {
+                SessionID = GameManager.instance.currentSession,
+            };
+            ProcessAction(action);
+        }
+
         #endregion
     }
 }

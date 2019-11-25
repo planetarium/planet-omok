@@ -1,6 +1,6 @@
 ﻿using Omok.BlockChain;
-using Omok.State;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Omok.Game
 {
@@ -10,9 +10,13 @@ namespace Omok.Game
         public const int BoardHeight = 13;
 
         public OmokNode nodePrefab;
+        public Text infoText;
+        public Sprite tempSprite;
         public Sprite blackSprite;
         public Sprite whiteSprite;
+        public Button resignButton;
         public Transform layout;
+        public bool finished;
 
         private readonly OmokNode[] _nodePool = new OmokNode[BoardWidth * BoardHeight];
         
@@ -24,7 +28,28 @@ namespace Omok.Game
                 node.SetEnabled(true);
                 node.Init(this, i);
             }
-            States.Instance.GameState = new GameState(GameState.Address);
+
+            finished = false;
+            resignButton.onClick.AddListener(Resign);
+            GameManager.instance.gameboard = this;
+            UpdateInfo();
+        }
+
+        private void OnDisable()
+        {
+            GameManager.instance.gameboard = null;
+        }
+
+        public void UpdateInfo()
+        {
+            infoText.text = GameManager.instance.isMyTurn ? "My Turn" : "Waiting For Other Player...";
+        }
+
+        public void SetResult(bool win)
+        {
+            resignButton.onClick.RemoveAllListeners();
+            finished = true;
+            infoText.text = win ? "You Win" : "You Lose";
         }
 
         public int GetIndex(int x, int y)
@@ -32,14 +57,25 @@ namespace Omok.Game
             return BoardWidth * y + x;
         }
 
-        int i = 0;
-        public void PlaceNode(int index)
+        public void PlaceNode(bool temp, int player, int index)
         {
+            if (finished || (temp && !GameManager.instance.isMyTurn)) return;
+            Debug.Log($"PlaceNode {temp}, {player}, {index}");
             var node = _nodePool[index];
-            if (node.index == -1) return;
+            if (temp && !node.Enabled) return;
+            node.SetSprite(temp ? tempSprite : (player == 0 ? blackSprite : whiteSprite));
+            node.SetEnabled(false);
+            if (temp)
+            {
+                GameManager.instance.SetMyTurn(false);
+                ActionManager.instance.Place(index);
+            }
+        }
 
-            node.SetSprite((i++ & 1) == 0 ? blackSprite : whiteSprite);
-            node.SetEnabled(true);
+        public void Resign()
+        {
+            ActionManager.instance.Resign();
+            SetResult(false);
         }
     }
 }

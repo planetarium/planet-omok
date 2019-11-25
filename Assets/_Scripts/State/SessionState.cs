@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Bencodex.Types;
 using Libplanet;
@@ -19,7 +18,7 @@ namespace Omok.State
             }
         );
 
-        public readonly Dictionary<string, List<Address>> sessions = new Dictionary<string, List<Address>>();
+        public readonly Dictionary<string, GameState> sessions = new Dictionary<string, GameState>();
 
         public SessionState() : base(Address)
         {
@@ -31,7 +30,7 @@ namespace Omok.State
             var rawSessions = (Bencodex.Types.Dictionary) bdict["sessions"];
             sessions = rawSessions.ToDictionary(
                 kv => kv.Key.ToString(),
-                kv => ((Bencodex.Types.List)kv.Value).Select(b => new Address(((Binary)b).Value)).ToList()
+                kv => new GameState((Bencodex.Types.Dictionary) kv.Value)
             );
         }
 
@@ -46,7 +45,7 @@ namespace Omok.State
                 [(Text) "sessions"] = new Bencodex.Types.Dictionary(sessions.Select(kv =>
                     new KeyValuePair<IKey, IValue>(
                         (Text) kv.Key,
-                        kv.Value.Select(addr => addr.Serialize()).Serialize()
+                        kv.Value.Serialize()
                     )
                 ))
             }.Union((Bencodex.Types.Dictionary) base.Serialize()));

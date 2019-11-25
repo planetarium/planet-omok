@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Bencodex.Types;
-using Libplanet;
 using Libplanet.Action;
 using LibplanetUnity;
 using LibplanetUnity.Action;
@@ -13,10 +11,7 @@ namespace Omok.Action
     public class JoinSession : GameAction
     {
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
-            new Dictionary<string, IValue>
-            {
-                ["sessionID"] = new Bencodex.Types.Text(SessionID),
-            }.ToImmutableDictionary();
+            ImmutableDictionary<string, IValue>.Empty;
 
         public JoinSession()
         {
@@ -24,7 +19,6 @@ namespace Omok.Action
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
-            SessionID = ((Bencodex.Types.Text) plainValue["sessionID"]).Value;
         }
 
         public override IAccountStateDelta Execute(IActionContext ctx)
@@ -49,11 +43,13 @@ namespace Omok.Action
 
             if (sessionState.sessions.ContainsKey(SessionID))
             {
-                sessionState.sessions[SessionID].Add(ctx.Signer);
+                sessionState.sessions[SessionID].Players.Add(ctx.Signer);
             }
             else
             {
-                sessionState.sessions.Add(SessionID, new List<Address> { ctx.Signer });
+                var gameState = new GameState(SessionID);
+                gameState.Players.Add(ctx.Signer);
+                sessionState.sessions.Add(SessionID, gameState);
             }
             GameManager.instance.currentSession = SessionID;
             return states.SetState(SessionState.Address, sessionState.Serialize());
